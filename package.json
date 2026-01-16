@@ -1,0 +1,44 @@
+{
+  "name": "thehub",
+  "version": "1.0.4",
+  "description": "A desktop application for time tracking, managing projects, creating Change Management Forms (CMF), and viewing productivity analytics.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knottybigdog2000/thehub.git"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^26.4.0"
+  },
+  "dependencies": {
+    "docxtemplater": "^3.67.6",
+    "electron-updater": "^6.7.3",
+    "pizzip": "^3.2.0"
+  },
+  "build": {
+    "appId": "com.example.thehub",
+    "productName": "TheHub",
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "knottybigdog2000",
+      "repo": "thehub",
+      "private": true
+    }
+  }
+}

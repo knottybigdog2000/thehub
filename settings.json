@@ -1,0 +1,9 @@
+{
+    "theme": "dark",
+    "keybindings": {
+        "start": "CmdOrCtrl+Shift+S",
+        "pause": "CmdOrCtrl+Shift+P",
+        "stop": "CmdOrCtrl+Shift+X"
+    },
+    "projects": []
+}

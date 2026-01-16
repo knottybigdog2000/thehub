@@ -1,0 +1,94 @@
+[
+  {
+    "id": "ap_scan_3000_4500",
+    "name": "Freq Scan: 3000/4500 Series (ePMP)",
+    "description": "Frequency scan for ePMP 3000L, 3000, 4500, and 4600 radios.",
+    "variables": [
+      { "key": "apName", "label": "AP Name", "placeholder": "e.g. Tower-Sector-North" },
+      { "key": "ipAddress", "label": "IP Address", "placeholder": "10.x.x.x" },
+      { "key": "currentFreq", "label": "Current Frequency", "placeholder": "e.g. 5800" },
+      { "key": "customers", "label": "Customers Impacted", "placeholder": "e.g. 15 Customers / Sector North Users" }
+    ],
+    "data": {
+       "CHANGE_NAME": "Freq Scan AP: {{apName}}",
+       "description": "Frequency scan for {{apName}} ({{ipAddress}})",
+       "_rawUrgency": "urgmaint",
+       "_rawSeverity": "sevlow",
+       "customersimpacted": "{{customers}}",
+       "timeneeded": "15 Minutes",
+       "stepschange": "1. Login to the AP at {{ipAddress}}\n2. Navigate to Tools -> Spectrum Analyzer\n3. Enable Spectrum Analyzer\n4. Run the scan to identify cleaner spectrum\n5. Config -> Radio\n6. Set new frequency based on scan results\n7. Save and Reboot\n8. Ensure Spectrum Analyzer is disabled if required",
+       "stepsverify": "Verify customers reconnect and modulation/throughput improves.",
+       "stepsrevert": "1. Login to the AP\n2. Config -> Radio\n3. Revert to original frequency: {{currentFreq}}\n4. Save and Reboot",
+       "resources": "PC, Internet access"
+    }
+  },
+  {
+    "id": "ap_scan_1k_2k",
+    "name": "Freq Scan: 1000/2000 Series (Legacy)",
+    "description": "Frequency scan for ePMP 1000 and 2000 radios (Requires Java/Reboot).",
+    "variables": [
+      { "key": "apName", "label": "AP Name", "placeholder": "e.g. Tower-Sector-South" },
+      { "key": "ipAddress", "label": "IP Address", "placeholder": "10.x.x.x" },
+      { "key": "currentFreq", "label": "Current Frequency", "placeholder": "e.g. 5750" },
+      { "key": "customers", "label": "Customers Impacted", "placeholder": "e.g. 20 Customers / Sector South Users" }
+    ],
+    "data": {
+       "CHANGE_NAME": "Freq Scan AP: {{apName}}",
+       "description": "Frequency scan for {{apName}} ({{ipAddress}})",
+       "_rawUrgency": "urgmaint",
+       "_rawSeverity": "sevlow",
+       "customersimpacted": "{{customers}}. Downtime required for reboot into Spectrum Mode.",
+       "timeneeded": "15 Minutes",
+       "stepschange": "1. Login to the AP at {{ipAddress}}\n2. Config -> Radio -> Set to 'Spectrum Analyzer' mode\n3. Save and Reboot\n4. (Ensure IP is in Java Whitelist)\n5. Connect with Cambium Spectrum Analyzer software\n6. Run scan and analyze\n7. Login to AP -> Config -> Radio\n8. Set back to 'AP' mode\n9. Set new frequency based on results\n10. Save and Reboot",
+       "stepsverify": "Verify customers reconnect and modulation/throughput improves.",
+       "stepsrevert": "1. Login to the AP\n2. Config -> Radio\n3. Revert to original frequency: {{currentFreq}}\n4. Save and Reboot",
+       "resources": "PC with Java, Cambium Spectrum Analyzer"
+    }
+  },
+  {
+    "id": "ap_scan_450",
+    "name": "Freq Scan: 450 Series",
+    "description": "Frequency scan for ePMP 450 radios.",
+    "variables": [
+      { "key": "apName", "label": "AP Name", "placeholder": "e.g. Tower-Sector-South" },
+      { "key": "ipAddress", "label": "IP Address", "placeholder": "10.x.x.x" },
+      { "key": "currentFreq", "label": "Current Frequency", "placeholder": "e.g. 5750" },
+      { "key": "customers", "label": "Customers Impacted", "placeholder": "e.g. 20 Customers / Sector South Users" }
+    ],
+    "data": {
+       "CHANGE_NAME": "Freq Scan AP: {{apName}}",
+       "description": "Frequency scan for {{apName}} ({{ipAddress}})",
+       "_rawUrgency": "urgmaint",
+       "_rawSeverity": "sevlow",
+       "customersimpacted": "{{customers}}. Downtime required for reboot into Spectrum Mode.",
+       "timeneeded": "15 Minutes",
+       "stepschange": "1. Login to the AP at {{ipAddress}}\n2. Tools -> Spectrum Analyzer -> Set timer to 120 seconods\n3. Save\n4. Run timed spectrum analysis.\n6. Config\n7. Config -> Radio\n8. Set new frequency based on results.\n9. Save and Reboot.",
+       "stepsverify": "Verify customers reconnect and modulation/throughput improves.",
+       "stepsrevert": "1. Login to the AP\n2. Config -> Radio\n3. Revert to original frequency: {{currentFreq}}\n4. Save and Reboot",
+       "resources": "PC, Internet access"
+    }
+  },
+  {
+    "id": "ap_scan_wave",
+    "name": "Freq Scan: UBNT Wave",
+    "description": "Frequency scan for UBNT Wave radios.",
+    "variables": [
+      { "key": "apName", "label": "AP Name", "placeholder": "e.g. Tower-Sector-South" },
+      { "key": "ipAddress", "label": "IP Address", "placeholder": "10.x.x.x" },
+      { "key": "currentFreq", "label": "Current Frequency", "placeholder": "e.g. 5750" },
+      { "key": "customers", "label": "Customers Impacted", "placeholder": "e.g. 20 Customers / Sector South Users" }
+    ],
+    "data": {
+      "CHANGE_NAME": "Freq Scan AP: {{apName}}",
+      "description": "Frequency scan for {{apName}} ({{ipAddress}})",
+      "_rawUrgency": "urgmaint",
+      "_rawSeverity": "sevlow",
+      "customersimpacted": "{{customers}}. Downtime required for reboot into Spectrum Mode.",
+      "timeneeded": "15 Minutes",
+      "stepschange": "1. Login to the AP at {{ipAddress}}\n2. Tools -> Site Survey\n3. Run\n4. Wireless -> Set new frequency based on results.\n5. Save.",
+      "stepsverify": "Verify customers reconnect and modulation/throughput improves also making sure all customers are connected to the 60Ghz.",
+      "stepsrevert": "1. Login to the AP\n2. Config -> Radio\n3. Revert to original frequency: {{currentFreq}}\n4. Save and Reboot",
+      "resources": "..."
+    }
+  }
+]

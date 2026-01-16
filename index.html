@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <title>The Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-item" data-view="time-tracker" title="Track your time and view logs">Time Tracker</div>
+            <div class="sidebar-item" data-view="cmf-creator" title="Create Change Management Forms">CMF Creator</div>
+            <div class="sidebar-item" data-view="analytics-view" title="View reports and statistics">Analytics</div>
+            <div class="sidebar-item" data-view="projects-view" title="Manage your projects">Projects</div>
+            <div class="sidebar-item" data-view="settings-view" title="Configure app settings">Settings</div>
+            <div class="user-profile"></div>
+        </div>
+        <div class="main-content">
+            <!-- Time Tracker View -->
+            <div id="time-tracker" class="view active">
+                <h1>Time Tracker</h1>
+                <div class="timer-section">
+                    <div class="timer-top-row">
+                        <div class="timer-display">00:00:00</div>
+                        <div class="timer-controls">
+                            <button id="start-btn" title="Start the timer">Start</button>
+                            <button id="pause-btn" title="Pause or resume the timer">Pause</button>
+                            <button id="stop-btn" title="Stop the timer and save the log">Stop & Save</button>
+                        </div>
+                    </div>
+                    <div class="task-input-row">
+                        <input type="text" id="current-task-description" placeholder="What are you working on?">
+                    </div>
+                    <div class="timer-stats">
+                         <div class="total-points-display">
+                            Total Points: <span id="total-points">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="time-log-view">
+                    <h2>Time Logs</h2>
+                    <div class="date-selector-container">
+                        <label for="log-date-picker">Select Date:</label>
+                        <input type="date" id="log-date-picker">
+                    </div>
+                    <div id="log-list"></div>
+                </div>
+            </div>
+
+            <!-- CMF Creator View -->
+            <div id="cmf-creator" class="view">
+                <h1>Change Management Form Creator</h1>
+                
+                <!-- Template Controls -->
+                <div class="settings-section" style="padding: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; background-color: var(--color-surface-hover);">
+                   <label style="margin: 0; white-space: nowrap; font-weight: bold; margin-right: 10px;">Smart Templates:</label>
+                   <button id="open-template-browser-btn" class="primary" style="flex-grow: 1; text-align: left; position: relative;">
+                       Select a Template...
+                       <span style="float: right; opacity: 0.7;">▼</span>
+                   </button>
+                </div>
+
+                <form id="cmf-form" class="settings-section cmf-grid-layout">
+                    <!-- Top Section -->
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-requestor">Requestor:</label>
+                        <input type="text" id="cmf-requestor" required>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-name">Change Name (for filename):</label>
+                        <input type="text" id="cmf-name" required>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-description">Description of Change:</label>
+                        <textarea id="cmf-description" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Urgency & Severity Section -->
+                    <div class="form-group-fieldset">
+                        <label>Urgency:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="urgency" value="urgem"> Emergency</label>
+                            <label><input type="radio" name="urgency" value="urgnorm" checked> Normal</label>
+                            <label><input type="radio" name="urgency" value="urglow"> Low</label>
+                            <label><input type="radio" name="urgency" value="urgmaint"> Maintenance</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-fieldset">
+                        <label>Severity:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="severity" value="sevcrit"> Critical</label>
+                            <label><input type="radio" name="severity" value="sevhigh"> High</label>
+                            <label><input type="radio" name="severity" value="sevnorm" checked> Normal</label>
+                            <label><input type="radio" name="severity" value="sevlow"> Low</label>
+                        </div>
+                    </div>
+
+                    <!-- Impact & Resources -->
+                    <div class="form-group">
+                        <label for="cmf-customers">Customers Impacted:</label>
+                        <textarea id="cmf-customers" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cmf-time">Time Needed:</label>
+                        <input type="text" id="cmf-time" placeholder="e.g. 2 hours">
+                    </div>
+
+                    <!-- Detailed Plans -->
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-stepschange">Implementation Steps (Steps to Change):</label>
+                        <textarea id="cmf-stepschange" rows="4"></textarea>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-stepsverify">Verification Steps:</label>
+                        <textarea id="cmf-stepsverify" rows="3"></textarea>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-stepsrevert">Rollback Steps (Revert Plan):</label>
+                        <textarea id="cmf-stepsrevert" rows="3"></textarea>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="cmf-resources">Resources Required:</label>
+                        <textarea id="cmf-resources" rows="2"></textarea>
+                    </div>
+
+                    <div style="grid-column: 1 / -1;">
+                        <button type="submit">Create CMF File</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view">
+                <h1>Analytics & Reports</h1>
+                <div class="analytics-controls">
+                    <label for="analytics-start-date">Start Date:</label>
+                    <input type="date" id="analytics-start-date">
+                    <label for="analytics-end-date">End Date:</label>
+                    <input type="date" id="analytics-end-date">
+                    <button id="generate-report-btn">Generate Report</button>
+                </div>
+                <div class="analytics-summary">
+                    <h3>Summary for Selected Period:</h3>
+                    <p>Total Time Logged: <span id="analytics-total-time">00:00:00</span></p>
+                    <p>Total Points Earned: <span id="analytics-total-points">0</span></p>
+                    <button id="export-json-btn" title="Export logs in this date range to a JSON file" style="margin-top: 10px;">Export to JSON</button>
+                </div>
+                <div class="analytics-charts">
+                    <!-- Charts will go here -->
+                    <p>Charts will be displayed here.</p>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view">
+                <h1>Settings</h1>
+                <div class="settings-section">
+                    <h2>Keybindings</h2>
+                    <p>Configure global shortcuts for the time tracker. Use Electron Accelerator format (e.g., 'CmdOrCtrl+Shift+S').</p>
+                    <div class="form-group">
+                        <label for="start-keybind">Start Timer Shortcut:</label>
+                        <input type="text" id="start-keybind" class="keybind-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="pause-keybind">Pause/Resume Timer Shortcut:</label>
+                        <input type="text" id="pause-keybind" class="keybind-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="stop-keybind">Stop Timer Shortcut:</label>
+                        <input type="text" id="stop-keybind" class="keybind-input">
+                    </div>
+                    <button id="save-settings-btn">Save Settings</button>
+                </div>
+                <div class="settings-section">
+                    <h2>Theme</h2>
+                    <p>Switch between light and dark themes.</p>
+                    <button id="theme-switcher-btn">Switch Theme</button>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Updates & Version</h2>
+                    <p>App Version: <span id="app-version">...</span></p>
+                    <button id="check-for-update-btn">Check for Updates</button>
+                    <div id="update-log-output" class="log-output"></div>
+                </div>
+            </div>
+
+            <!-- Projects View -->
+            <div id="projects-view" class="view">
+                <h1>Projects</h1>
+                <div class="settings-section">
+                    <h2>Add New Project</h2>
+                    <div class="form-group">
+                        <label for="new-project-name">Project Name:</label>
+                        <input type="text" id="new-project-name" placeholder="Enter new project name">
+                    </div>
+                    <button id="add-project-btn">Add Project</button>
+                </div>
+                <div class="settings-section">
+                    <h2>Existing Projects</h2>
+                    <div id="project-list">
+                        <!-- Projects will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+
+    <!-- Edit Log Modal -->
+    <div id="edit-log-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Edit Time Log</h2>
+            <input type="date" id="edit-log-date">
+            <input type="text" id="edit-log-time" placeholder="HH:MM:SS">
+            <input type="text" id="edit-log-project" placeholder="Project Name">
+            <textarea id="edit-log-description" rows="4" placeholder="Description"></textarea>
+            <div class="modal-buttons">
+                <button id="save-edited-log-btn">Save Changes</button>
+                <button id="cancel-edit-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Browser Modal -->
+    <div id="template-browser-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 600px;">
+            <h2>Select a Template</h2>
+            <div id="template-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto;">
+                <!-- Templates inserted here -->
+            </div>
+            <div class="modal-buttons">
+                <button id="close-template-browser-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Input Modal -->
+    <div id="template-input-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="template-input-title">Template Details</h2>
+            <div id="template-input-container">
+                <!-- Inputs inserted here -->
+            </div>
+            <div class="modal-buttons">
+                <button id="confirm-template-input-btn" class="primary">Generate</button>
+                <button id="cancel-template-input-btn">Cancel</button>
+            </div>
+        </div>
+    </div>

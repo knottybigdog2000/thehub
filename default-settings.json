@@ -1,0 +1,47 @@
+{
+  "theme": "dark",
+  "projects": [
+    "HSop Tracker"
+  ],
+  "keybindings": {
+    "start": "Ctrl+Shift+P",
+    "pause": "Ctrl+Shift+I",
+    "stop": "Ctrl+Shift+U"
+  },
+  "cmfTemplates": [
+    {
+      "name": "3000L/3000/4500/4600 Freq Scan",
+      "data": {
+        "REQUESTOR": "",
+        "CHANGE_NAME": "Freq scan AP:",
+        "requestor": "",
+        "description": "Freq Scan AP:",
+        "_rawUrgency": "urgmaint",
+        "_rawSeverity": "sevlow",
+        "customersimpacted": "",
+        "timeneeded": "15 Minutes",
+        "stepschange": "Login to the AP IP:\nTools\nSpectrum analyzer\nenable\nRun the scan\nConfig\nRadio\nSet new frequency\nSave\nBe sure to disable the spectrum analyzer",
+        "stepsverify": "Verify customers reconnect and modulation/throughput improves",
+        "stepsrevert": "Login to the AP\nConfig\nRadio\nRevert to (Variable here for original frequency/channel width)",
+        "resources": "PC, Internet."
+      }
+    },
+    {
+      "name": "1k/2k freq scan",
+      "data": {
+        "REQUESTOR": "",
+        "CHANGE_NAME": "Freq Scan AP:",
+        "requestor": "",
+        "description": "Freq Scan AP:",
+        "_rawUrgency": "urgmaint",
+        "_rawSeverity": "sevlow",
+        "customersimpacted": "",
+        "timeneeded": "15 Minutes",
+        "stepschange": "Login to the AP IP:\nConfig\nRadio\nSet to spectrum analyzer mode\nSave\nReboot\nAdd to Java whitelist\nConnect with Cambium Spectrum Analyzer software\nRun the scan\nConfig\nRadio\nSet back to AP mode\nSave\nReboot\nConfig\nRadio\nSet new frequnecy\nSave",
+        "stepsverify": "Verify customers reconnect and modulation/throughput improves",
+        "stepsrevert": "Login to the AP\nConfig\nRadio\nRevert to (Variable here for original frequency/channel width)",
+        "resources": "A PC, Internet"
+      }
+    }
+  ]
+}
