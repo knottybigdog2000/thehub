@@ -502,7 +502,31 @@ label {
     color: var(--color-text-secondary);
 }
 
+.radio-group .radio-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px; /* Add a little space between options */
+}
+
+.radio-group .radio-option small {
+    color: var(--color-text-muted);
+    margin-left: 8px;
+}
+
 .radio-group input[type="radio"] {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
     width: auto;
     margin: 0;
 }

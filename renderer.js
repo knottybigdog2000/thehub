@@ -17,11 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveEditedLogBtn = document.getElementById('save-edited-log-btn');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     const logDatePicker = document.getElementById('log-date-picker');
-    const analyticsStartDateInput = document.getElementById('analytics-start-date');
-    const analyticsEndDateInput = document.getElementById('analytics-end-date');
-    const generateReportBtn = document.getElementById('generate-report-btn');
-    const analyticsTotalTimeSpan = document.getElementById('analytics-total-time');
-    const analyticsTotalPointsSpan = document.getElementById('analytics-total-points');
     const currentTaskDescriptionInput = document.getElementById('current-task-description');
     const timerDisplay = document.querySelector('.timer-display');
     const startBtn = document.getElementById('start-btn');
@@ -40,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appVersionEl = document.getElementById('app-version');
     const checkForUpdateBtn = document.getElementById('check-for-update-btn');
     const updateLogOutputEl = document.getElementById('update-log-output');
+    const startupCheckbox = document.getElementById('startup-checkbox');
     const openTemplateBrowserBtn = document.getElementById('open-template-browser-btn');
     const templateBrowserModal = document.getElementById('template-browser-modal');
     const closeTemplateBrowserBtn = document.getElementById('close-template-browser-btn');
@@ -48,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const templateInputContainer = document.getElementById('template-input-container');
     const confirmTemplateInputBtn = document.getElementById('confirm-template-input-btn');
     const cancelTemplateInputBtn = document.getElementById('cancel-template-input-btn');
+    const exportTodayBtn = document.getElementById('export-today-btn');
 
     // --- State Variables ---
     let allLogs = [];
@@ -165,31 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function generateReport() {
-        if (allLogs.length === 0) {
-            allLogs = await window.electronAPI.getTimeLogs();
-        }
-        const startDate = new Date(analyticsStartDateInput.value);
-        const endDate = new Date(analyticsEndDateInput.value);
-        endDate.setHours(23, 59, 59, 999);
-
-        const filteredLogs = allLogs.filter(log => {
-            if (!log) return false;
-            const logDate = new Date(log.date);
-            return logDate >= startDate && logDate <= endDate;
-        });
-
-        const totalSecondsLogged = filteredLogs.reduce((sum, log) => {
-            if (!log || !log.time) return sum;
-            const timeParts = log.time.split(':').map(Number);
-            return sum + timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2];
-        }, 0);
-        
-        const totalPointsEarned = filteredLogs.reduce((sum, log) => sum + (log.points || 0), 0);
-        analyticsTotalTimeSpan.textContent = formatTime(totalSecondsLogged);
-        analyticsTotalPointsSpan.textContent = totalPointsEarned;
-    }
-    
     async function loadUsername() {
         const userProfile = document.querySelector('.user-profile');
         const username = await window.electronAPI.getUsername();
@@ -208,6 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const version = await window.electronAPI.getAppVersion();
         appVersionEl.textContent = `v${version}`;
+
+        // Load startup settings
+        const loginSettings = await window.electronAPI.getLoginItemSettings();
+        startupCheckbox.checked = loginSettings.openAtLogin;
     }
 
     async function saveAllSettings() {
@@ -232,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Event Listeners ---
     logDatePicker.addEventListener('change', loadAndRenderLogs);
-    generateReportBtn.addEventListener('click', generateReport);
     startBtn.addEventListener('click', () => {
         if (!timer) {
             isPaused = false;
@@ -369,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
             projects.push(newProjectName);
             projects.sort();
             newProjectNameInput.value = '';
-            renderProjects();
+            renderProjects(); // Re-render the project list
             saveAllSettings();
         }
     });
@@ -414,33 +389,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    exportJsonBtn.addEventListener('click', () => {
-        const startDate = analyticsStartDateInput.value;
-        const endDate = analyticsEndDateInput.value;
-
-        if (!startDate || !endDate) {
-            return alert('Please select a valid start and end date.');
+    exportTodayBtn.addEventListener('click', () => {
+        const selectedDate = logDatePicker.value;
+        if (!selectedDate) {
+            return alert('Please select a date to export.');
         }
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999); // Include all logs on the end date
-
-        const logsToExport = allLogs.filter(log => {
-            if (!log || !log.date) return false;
-            const logDate = new Date(log.date);
-            return logDate >= start && logDate <= end;
-        });
+        const logsToExport = allLogs.filter(log => log.date === selectedDate);
 
         if (logsToExport.length > 0) {
             window.electronAPI.exportLogsJson({
                 logs: logsToExport,
-                startDate: startDate,
-                endDate: endDate,
+                date: selectedDate,
             });
-            alert('Logs for the selected date range exported successfully!');
+            alert(`Summary for ${selectedDate} exported successfully!`);
         } else {
-            alert('No logs to export in the selected date range.');
+            alert('No logs to export for the selected date.');
         }
     });
     
@@ -479,6 +443,13 @@ document.addEventListener('DOMContentLoaded', () => {
         logLine.textContent = message;
         updateLogOutputEl.appendChild(logLine);
         updateLogOutputEl.scrollTop = updateLogOutputEl.scrollHeight; // Auto-scroll
+    });
+
+    startupCheckbox.addEventListener('change', () => {
+        const openAtLogin = startupCheckbox.checked;
+        window.electronAPI.setLoginItemSettings({ openAtLogin });
+        currentSettings.openAtLogin = openAtLogin;
+        saveAllSettings(); // Save this preference in our main settings file too
     });
 
     // --- Smart Template Logic ---
@@ -582,10 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial Application Load ---
     async function initialLoad() {
         logDatePicker.value = (new Date()).toLocaleDateString('en-CA');
-        analyticsEndDateInput.value = (new Date()).toLocaleDateString('en-CA');
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        analyticsStartDateInput.value = thirtyDaysAgo.toLocaleDateString('en-CA');
         await loadUsername();
         await loadAndRenderLogs();
         await loadAllSettings();

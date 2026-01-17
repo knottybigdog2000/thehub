@@ -341,6 +341,11 @@ ipcMain.handle('check-for-update', () => {
     autoUpdater.checkForUpdates();
 });
 
+ipcMain.handle('set-login-item-settings', (event, settings) => {
+    app.setLoginItemSettings(settings);
+    return app.getLoginItemSettings();
+});
+
 ipcMain.on('save-cmf', async (event, data) => {
     const { dialog } = require('electron');
     try {
@@ -447,7 +452,7 @@ ipcMain.handle('update-time-log', async (event, { oldDate, oldTime, oldDescripti
     }
     return { success: false, message: "Log not found." };
 });
-ipcMain.handle('export-logs-json', async (event, { logs, startDate, endDate }) => {
+ipcMain.handle('export-logs-json', async (event, { logs, date }) => {
     const { dialog } = require('electron');
 
     const totalSeconds = logs.reduce((sum, log) => {
@@ -466,8 +471,7 @@ ipcMain.handle('export-logs-json', async (event, { logs, startDate, endDate }) =
 
     const exportData = {
         summary: {
-            startDate,
-            endDate,
+            date,
             totalTimeLogged,
             totalMinutes: parseFloat(totalMinutes.toFixed(2)),
             totalPoints,
@@ -476,14 +480,14 @@ ipcMain.handle('export-logs-json', async (event, { logs, startDate, endDate }) =
     };
 
     const { filePath } = await dialog.showSaveDialog({
-        title: 'Save Logs as JSON',
-        defaultPath: path.join(app.getPath('documents'), `time-logs-${startDate}-to-${endDate}.json`),
+        title: 'Save Daily Summary as JSON',
+        defaultPath: path.join(app.getPath('documents'), `time-log-${date}.json`),
         filters: [{ name: 'JSON Files', extensions: ['json'] }]
     });
 
     if (filePath) {
         await fsPromises.writeFile(filePath, JSON.stringify(exportData, null, 2));
-        return { success: true, message: 'Logs exported successfully!' };
+        return { success: true, message: 'Daily summary exported successfully!' };
     }
     return { success: false, message: 'Export cancelled.' };
 });

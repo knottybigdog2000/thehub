@@ -19,4 +19,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getAppVersion: () => ipcRenderer.invoke('get-app-version'),
     checkForUpdate: () => ipcRenderer.invoke('check-for-update'),
     onUpdateLog: (callback) => ipcRenderer.on('update-log', (_event, value) => callback(value)),
+    setLoginItemSettings: (settings) => ipcRenderer.invoke('set-login-item-settings', settings),
 });

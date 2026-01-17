@@ -12,7 +12,6 @@
         <div class="sidebar">
             <div class="sidebar-item" data-view="time-tracker" title="Track your time and view logs">Time Tracker</div>
             <div class="sidebar-item" data-view="cmf-creator" title="Create Change Management Forms">CMF Creator</div>
-            <div class="sidebar-item" data-view="analytics-view" title="View reports and statistics">Analytics</div>
             <div class="sidebar-item" data-view="projects-view" title="Manage your projects">Projects</div>
             <div class="sidebar-item" data-view="settings-view" title="Configure app settings">Settings</div>
             <div class="user-profile"></div>
@@ -45,6 +44,7 @@
                     <div class="date-selector-container">
                         <label for="log-date-picker">Select Date:</label>
                         <input type="date" id="log-date-picker">
+                        <button id="export-today-btn" class="primary">Export Day</button>
                     </div>
                     <div id="log-list"></div>
                 </div>
@@ -79,23 +79,23 @@
                     </div>
 
                     <!-- Urgency & Severity Section -->
-                    <div class="form-group-fieldset">
+                    <div class="form-group-fieldset" style="grid-column: 1 / -1;">
                         <label>Urgency:</label>
                         <div class="radio-group">
-                            <label><input type="radio" name="urgency" value="urgem"> Emergency</label>
-                            <label><input type="radio" name="urgency" value="urgnorm" checked> Normal</label>
-                            <label><input type="radio" name="urgency" value="urglow"> Low</label>
-                            <label><input type="radio" name="urgency" value="urgmaint"> Maintenance</label>
+                            <div class="radio-option"><label><input type="radio" name="urgency" value="urgem"> Emergency <small>- Major service impacting issue. To be resolved immediately.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="urgency" value="urgnorm" checked> Normal <small>- Service impacting issue. To be resolved today.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="urgency" value="urglow"> Low <small>- Non-service impacting issue. Needs to be completed when able.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="urgency" value="urgmaint"> Maintenance <small>- Issue to be resolved during the next maintenance window.</small></label></div>
                         </div>
                     </div>
                     
-                    <div class="form-group-fieldset">
+                    <div class="form-group-fieldset" style="grid-column: 1 / -1;">
                         <label>Severity:</label>
                         <div class="radio-group">
-                            <label><input type="radio" name="severity" value="sevcrit"> Critical</label>
-                            <label><input type="radio" name="severity" value="sevhigh"> High</label>
-                            <label><input type="radio" name="severity" value="sevnorm" checked> Normal</label>
-                            <label><input type="radio" name="severity" value="sevlow"> Low</label>
+                            <div class="radio-option"><label><input type="radio" name="severity" value="sevcrit"> Critical Impact <small>- Impacts many customers on multiple towers.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="severity" value="sevhigh"> High Impact <small>- Impacts many customers on one tower.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="severity" value="sevnorm" checked> Normal Impact <small>- Impacts some customers on one tower.</small></label></div>
+                            <div class="radio-option"><label><input type="radio" name="severity" value="sevlow"> Low Impact <small>- Impact is light.</small></label></div>
                         </div>
                     </div>
 
@@ -133,28 +133,6 @@
                 </form>
             </div>
 
-            <!-- Analytics View -->
-            <div id="analytics-view" class="view">
-                <h1>Analytics & Reports</h1>
-                <div class="analytics-controls">
-                    <label for="analytics-start-date">Start Date:</label>
-                    <input type="date" id="analytics-start-date">
-                    <label for="analytics-end-date">End Date:</label>
-                    <input type="date" id="analytics-end-date">
-                    <button id="generate-report-btn">Generate Report</button>
-                </div>
-                <div class="analytics-summary">
-                    <h3>Summary for Selected Period:</h3>
-                    <p>Total Time Logged: <span id="analytics-total-time">00:00:00</span></p>
-                    <p>Total Points Earned: <span id="analytics-total-points">0</span></p>
-                    <button id="export-json-btn" title="Export logs in this date range to a JSON file" style="margin-top: 10px;">Export to JSON</button>
-                </div>
-                <div class="analytics-charts">
-                    <!-- Charts will go here -->
-                    <p>Charts will be displayed here.</p>
-                </div>
-            </div>
-
             <!-- Settings View -->
             <div id="settings-view" class="view">
                 <h1>Settings</h1>
@@ -186,6 +164,16 @@
                     <p>App Version: <span id="app-version">...</span></p>
                     <button id="check-for-update-btn">Check for Updates</button>
                     <div id="update-log-output" class="log-output"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Startup Behavior</h2>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="startup-checkbox">
+                            Launch The Hub on system startup
+                        </label>
+                    </div>
                 </div>
             </div>
 
